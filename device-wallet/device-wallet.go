@@ -347,6 +347,30 @@ func DeviceSetMnemonic(deviceType DeviceType, mnemonic string) {
 	log.Println(DecodeSuccessOrFailMsg(msg.Kind, msg.Data))
 }
 
+// DeviceIsMemoryProtected Ask if memory protection is enabled (bootloader mode only).
+func DeviceIsMemoryProtected(deviceType DeviceType) string {
+
+	dev, err := getDevice(deviceType)
+	if err != nil {
+		log.Panicf(err.Error())
+		return ""
+	}
+	defer dev.Close()
+
+	skycoinIsMemoryProtected := &messages.IsMemoryProtected{}
+
+	data, _ := proto.Marshal(skycoinIsMemoryProtected)
+	chunks := makeTrezorMessage(data, messages.MessageType_MessageType_IsMemoryProtected)
+
+	msg, err := sendToDevice(dev, chunks)
+	if err != nil {
+		log.Panicf(err.Error())
+		return ""
+	}
+	log.Printf("%x\n", msg)
+	return DecodeSuccessOrFailMsg(msg.Kind, msg.Data)
+}
+
 // DeviceGetVersion Ask the firmware version
 func DeviceGetVersion(deviceType DeviceType) string {
 

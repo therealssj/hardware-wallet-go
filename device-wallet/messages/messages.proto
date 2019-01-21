@@ -53,6 +53,8 @@ enum MessageType {
 	MessageType_ResponseSkycoinSignMessage = 118 [(wire_out) = true];
 	MessageType_GenerateMnemonic = 119 [(wire_in) = true];
 	MessageType_GetVersion = 120 [(wire_in) = true];
+	//Bootloader
+	MessageType_IsMemoryProtected = 121 [(wire_in) = true];
 }
 
 ////////////////////
@@ -302,6 +304,13 @@ message PassphraseStateAck {
  */
 message GetEntropy {
 	required uint32 size = 1;		// size of requested entropy
+}
+
+/**
+ * Request: Ask the device if the memory protection is enabled (works only in bootloader mode)
+ * @next Success
+ */
+message IsMemoryProtected {
 }
 
 /**
