@@ -1,10 +1,10 @@
-package main
+package cmd
 
 import (
 	"fmt"
 	"os"
 
-	"github.com/skycoin/hardware-wallet-go/cli"
+	"github.com/skycoin/hardware-wallet-go/src/cli"
 )
 
 func main() {

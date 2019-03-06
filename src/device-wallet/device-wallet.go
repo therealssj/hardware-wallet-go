@@ -26,34 +26,48 @@ const (
 	DeviceTypeUsb DeviceType = 2
 )
 
-type DeviceWallet interface {
-	AddressGen(deviceType DeviceType, addressN int, startIndex int, confirmAddress bool) (wire.Message, error)
-	ApplySettings(deviceType DeviceType, usePassphrase bool, label string) (wire.Message, error)
-	Backup(deviceType DeviceType) (wire.Message, error)
-	Cancel(deviceType DeviceType) (wire.Message, error)
-	CheckMessageSignature(deviceType DeviceType, message string, signature string, address string) (wire.Message, error)
-	ChangePin(deviceType DeviceType) (wire.Message, error)
-	Connected(deviceType DeviceType) bool
+type Devicer interface {
+	AddressGen(addressN int, startIndex int, confirmAddress bool) (wire.Message, error)
+	ApplySettings(usePassphrase bool, label string) (wire.Message, error)
+	Backup() (wire.Message, error)
+	Cancel() (wire.Message, error)
+	CheckMessageSignature(message string, signature string, address string) (wire.Message, error)
+	ChangePin() (wire.Message, error)
+	Connected() bool
 	FirmwareUpload(payload []byte, hash [32]byte) error
-	GetFeatures(deviceType DeviceType) (wire.Message, error)
-	GenerateMnemonic(deviceType DeviceType, wordCount uint32, usePassphrase bool) (wire.Message, error)
-	Recovery(deviceType DeviceType, wordCount uint32, usePassphrase, dryRun bool) (wire.Message, error)
-	SetMnemonic(deviceType DeviceType, mnemonic string) (wire.Message, error)
-	TransactionSign(deviceType DeviceType, inputs []*messages.SkycoinTransactionInput, outputs []*messages.SkycoinTransactionOutput) (wire.Message, error)
-	SignMessage(deviceType DeviceType, addressN int, message string) (wire.Message, error)
-	Wipe(deviceType DeviceType) (wire.Message, error)
-	ButtonAck(deviceType DeviceType) (wire.Message, error)
-	PassphraseAck(deviceType DeviceType, passphrase string) (wire.Message, error)
-	WordAck(deviceType DeviceType, word string) (wire.Message, error)
-	PinMatrixAck(deviceType DeviceType, p string) (wire.Message, error)
+	GetFeatures() (wire.Message, error)
+	GenerateMnemonic(wordCount uint32, usePassphrase bool) (wire.Message, error)
+	Recovery(wordCount uint32, usePassphrase, dryRun bool) (wire.Message, error)
+	SetMnemonic(mnemonic string) (wire.Message, error)
+	TransactionSign(inputs []*messages.SkycoinTransactionInput, outputs []*messages.SkycoinTransactionOutput) (wire.Message, error)
+	SignMessage(addressN int, message string) (wire.Message, error)
+	Wipe() (wire.Message, error)
+	ButtonAck() (wire.Message, error)
+	PassphraseAck(passphrase string) (wire.Message, error)
+	WordAck(word string) (wire.Message, error)
+	PinMatrixAck(p string) (wire.Message, error)
 }
 
-// SkyWallet provides skycoin hardware wallet functions
-type SkyWallet struct{}
+// Device provides hardware wallet functions
+type Device struct{
+	DeviceType
+}
+
+func NewEmulatorDevice() *Device {
+	return &Device{
+		DeviceTypeEmulator,
+	}
+}
+
+func NewUSBDevice() *Device {
+	return &Device{
+		DeviceTypeUsb,
+	}
+}
 
 // AddressGen Ask the device to generate an address
-func (d *SkyWallet) AddressGen(deviceType DeviceType, addressN int, startIndex int, confirmAddress bool) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) AddressGen(addressN int, startIndex int, confirmAddress bool) (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -74,8 +88,8 @@ func (d *SkyWallet) AddressGen(deviceType DeviceType, addressN int, startIndex i
 }
 
 // ApplySettings send ApplySettings request to the device
-func (d *SkyWallet) ApplySettings(deviceType DeviceType, usePassphrase bool, label string) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) ApplySettings( usePassphrase bool, label string) (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -97,8 +111,8 @@ func (d *SkyWallet) ApplySettings(deviceType DeviceType, usePassphrase bool, lab
 }
 
 // BackupDevice ask the device to perform the seed backup
-func (d *SkyWallet) Backup(deviceType DeviceType) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) Backup() (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -132,8 +146,8 @@ func (d *SkyWallet) Backup(deviceType DeviceType) (wire.Message, error) {
 }
 
 // Cancel send Cancel request
-func (d *SkyWallet) Cancel(deviceType DeviceType) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) Cancel() (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -148,8 +162,8 @@ func (d *SkyWallet) Cancel(deviceType DeviceType) (wire.Message, error) {
 }
 
 // CheckMessageSignature Check a message signature matches the given address.
-func (s *SkyWallet) CheckMessageSignature(deviceType DeviceType, message string, signature string, address string) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) CheckMessageSignature(message string, signature string, address string) (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -192,8 +206,8 @@ func (s *SkyWallet) CheckMessageSignature(deviceType DeviceType, message string,
 // To set the PIN "12345", the positions are:
 // top, bottom-right, top-left, right, top-right
 // so you must send "83769".
-func (d *SkyWallet) ChangePin(deviceType DeviceType) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) ChangePin() (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -218,8 +232,8 @@ func (d *SkyWallet) ChangePin(deviceType DeviceType) (wire.Message, error) {
 }
 
 // Connected check if a device is connected
-func (d *SkyWallet) Connected(deviceType DeviceType) bool {
-	dev, err := getDevice(deviceType)
+func (d *Device) Connected() bool {
+	dev, err := getDevice(d.DeviceType)
 	if dev == nil {
 		return false
 	}
@@ -248,7 +262,7 @@ func (d *SkyWallet) Connected(deviceType DeviceType) bool {
 }
 
 // FirmwareUpload Updates device's firmware
-func (d *SkyWallet) FirmwareUpload(payload []byte, hash [32]byte) error {
+func (d *Device) FirmwareUpload(payload []byte, hash [32]byte) error {
 	dev, err := getDevice(DeviceTypeUsb)
 	if err != nil {
 		return err
@@ -304,8 +318,8 @@ func (d *SkyWallet) FirmwareUpload(payload []byte, hash [32]byte) error {
 }
 
 // GetFeatures send Features message to the device
-func (d *SkyWallet) GetFeatures(deviceType DeviceType) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) GetFeatures() (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -323,8 +337,8 @@ func (d *SkyWallet) GetFeatures(deviceType DeviceType) (wire.Message, error) {
 }
 
 // GenerateMnemonic Ask the device to generate a mnemonic and configure itself with it.
-func (d *SkyWallet) GenerateMnemonic(deviceType DeviceType, wordCount uint32, usePassphrase bool) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) GenerateMnemonic(wordCount uint32, usePassphrase bool) (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -358,8 +372,8 @@ func (d *SkyWallet) GenerateMnemonic(deviceType DeviceType, wordCount uint32, us
 }
 
 // RecoveryDevice ask the device to perform the seed backup
-func (d *SkyWallet) Recovery(deviceType DeviceType, wordCount uint32, usePassphrase, dryRun bool) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) Recovery(wordCount uint32, usePassphrase, dryRun bool) (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -396,8 +410,8 @@ func (d *SkyWallet) Recovery(deviceType DeviceType, wordCount uint32, usePassphr
 }
 
 // SetMnemonic Configure the device with a mnemonic.
-func (d *SkyWallet) SetMnemonic(deviceType DeviceType, mnemonic string) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) SetMnemonic(mnemonic string) (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -432,8 +446,8 @@ func (d *SkyWallet) SetMnemonic(deviceType DeviceType, mnemonic string) (wire.Me
 }
 
 // SignMessage Ask the device to sign a message using the secret key at given index.
-func (d *SkyWallet) SignMessage(deviceType DeviceType, addressN int, message string) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) SignMessage(addressN int, message string) (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -455,8 +469,8 @@ func (d *SkyWallet) SignMessage(deviceType DeviceType, addressN int, message str
 }
 
 // TransactionSign Ask the device to sign a transaction using the given information.
-func (d *SkyWallet) TransactionSign(deviceType DeviceType, inputs []*messages.SkycoinTransactionInput, outputs []*messages.SkycoinTransactionOutput) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) TransactionSign(inputs []*messages.SkycoinTransactionInput, outputs []*messages.SkycoinTransactionOutput) (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -481,8 +495,8 @@ func (d *SkyWallet) TransactionSign(deviceType DeviceType, inputs []*messages.Sk
 }
 
 // WipeDevice wipes out device configuration
-func (d *SkyWallet) Wipe(deviceType DeviceType) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) Wipe() (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -528,8 +542,8 @@ func (d *SkyWallet) Wipe(deviceType DeviceType) (wire.Message, error) {
 
 // ButtonAck when the device is waiting for the user to press a button
 // the PC need to acknowledge, showing it knows we are waiting for a user action
-func (s *SkyWallet) ButtonAck(deviceType DeviceType) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) ButtonAck() (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -558,8 +572,8 @@ func deviceButtonAck(dev io.ReadWriteCloser) (wire.Message, error) {
 }
 
 // PassphraseAck send this message when the device is waiting for the user to input a passphrase
-func (s *SkyWallet) PassphraseAck(deviceType DeviceType, passphrase string) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) PassphraseAck(passphrase string) (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -573,8 +587,8 @@ func (s *SkyWallet) PassphraseAck(deviceType DeviceType, passphrase string) (wir
 }
 
 // WordAck send a word to the device during device "recovery procedure"
-func (s *SkyWallet) WordAck(deviceType DeviceType, word string) (wire.Message, error) {
-	dev, err := getDevice(deviceType)
+func (d *Device) WordAck(word string) (wire.Message, error) {
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -593,9 +607,9 @@ func (s *SkyWallet) WordAck(deviceType DeviceType, word string) (wire.Message, e
 }
 
 // PinMatrixAck during PIN code setting use this message to send user input to device
-func (s *SkyWallet) PinMatrixAck(deviceType DeviceType, p string) (wire.Message, error) {
+func (d *Device) PinMatrixAck(p string) (wire.Message, error) {
 	time.Sleep(1 * time.Second)
-	dev, err := getDevice(deviceType)
+	dev, err := getDevice(d.DeviceType)
 	if err != nil {
 		return wire.Message{}, err
 	}
