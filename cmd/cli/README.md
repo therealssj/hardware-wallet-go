@@ -28,7 +28,7 @@ Skycoin Hardware wallet command line interface
 ## Install
 
 ```bash
-$ cd $GOPATH/src/github.com/skycoin/hardware-wallet-go/
+$ cd $GOPATH/src/github.com/therealssj/hardware-wallet-go/
 $ ./install.sh
 ```
 

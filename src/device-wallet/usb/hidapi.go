@@ -6,7 +6,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/skycoin/hardware-wallet-go/src/device-wallet/usb/usbhid"
+	"github.com/therealssj/hardware-wallet-go/src/device-wallet/usb/usbhid"
 )
 
 const (

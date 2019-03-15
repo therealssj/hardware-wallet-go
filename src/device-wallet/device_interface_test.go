@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/skycoin/hardware-wallet-go/src/device-wallet/wire"
+	"github.com/therealssj/hardware-wallet-go/src/device-wallet/wire"
 
 	"github.com/gogo/protobuf/proto"
 	"github.com/stretchr/testify/require"
 
-	messages "github.com/skycoin/hardware-wallet-go/src/device-wallet/messages/go"
+	messages "github.com/therealssj/hardware-wallet-go/src/device-wallet/messages/go"
 )
 
 func testHelperGetDeviceWithBestEffort(testName string, t *testing.T) *Device {

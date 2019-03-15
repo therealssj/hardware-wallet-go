@@ -3,12 +3,12 @@ package cli
 import (
 	"fmt"
 
-	"github.com/skycoin/hardware-wallet-go/src/device-wallet/wire"
+	"github.com/therealssj/hardware-wallet-go/src/device-wallet/wire"
 
 	gcli "github.com/urfave/cli"
 
-	deviceWallet "github.com/skycoin/hardware-wallet-go/src/device-wallet"
-	messages "github.com/skycoin/hardware-wallet-go/src/device-wallet/messages/go"
+	deviceWallet "github.com/therealssj/hardware-wallet-go/src/device-wallet"
+	messages "github.com/therealssj/hardware-wallet-go/src/device-wallet/messages/go"
 )
 
 func applySettingsCmd() gcli.Command {

@@ -5,7 +5,7 @@ import (
 
 	gcli "github.com/urfave/cli"
 
-	deviceWallet "github.com/skycoin/hardware-wallet-go/src/device-wallet"
+	deviceWallet "github.com/therealssj/hardware-wallet-go/src/device-wallet"
 )
 
 func checkMessageSignatureCmd() gcli.Command {

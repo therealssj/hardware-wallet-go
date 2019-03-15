@@ -4,8 +4,8 @@ import (
 	"errors"
 	"time"
 
-	messages "github.com/skycoin/hardware-wallet-go/src/device-wallet/messages/go"
-	"github.com/skycoin/hardware-wallet-go/src/device-wallet/wire"
+	messages "github.com/therealssj/hardware-wallet-go/src/device-wallet/messages/go"
+	"github.com/therealssj/hardware-wallet-go/src/device-wallet/wire"
 	"github.com/skycoin/skycoin/src/util/logging"
 )
 

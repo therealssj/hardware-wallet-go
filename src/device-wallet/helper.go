@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/gogo/protobuf/proto"
-	messages "github.com/skycoin/hardware-wallet-go/src/device-wallet/messages/go"
-	"github.com/skycoin/hardware-wallet-go/src/device-wallet/usb"
-	"github.com/skycoin/hardware-wallet-go/src/device-wallet/wire"
+	messages "github.com/therealssj/hardware-wallet-go/src/device-wallet/messages/go"
+	"github.com/therealssj/hardware-wallet-go/src/device-wallet/usb"
+	"github.com/therealssj/hardware-wallet-go/src/device-wallet/wire"
 )
 
 type DeviceDriver interface {
