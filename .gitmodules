@@ -1,4 +1,0 @@
-[submodule "device-wallet/messages"]
-	path = src/device-wallet/messages
-	url = http://github.com/therealssj/hardware-wallet-protob.git
-	branch = test
