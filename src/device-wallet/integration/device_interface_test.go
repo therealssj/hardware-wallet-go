@@ -130,7 +130,6 @@ func TestGetAddressUsb(t *testing.T) {
 		t.Skip("TestGetAddressUsb do not work if Usb device is not connected")
 		return
 	}
-	require.NoError(t, device.Disconnect())
 
 	_, err := device.Wipe()
 	require.NoError(t, err)
@@ -156,7 +155,6 @@ func TestGetDeviceEntropyShouldWorkOk(t *testing.T) {
 		t.Skip("TestGetDeviceEntropyShouldWorkOk do not work if Usb device is not connected")
 		return
 	}
-	require.NoError(t, device.Disconnect())
 	msg, err := device.Wipe()
 	require.NoError(t, err)
 	_, err = deviceWallet.DecodeSuccessMsg(msg)

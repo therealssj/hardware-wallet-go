@@ -26,7 +26,7 @@ func (_m *MockDeviceDriver) DeviceType() DeviceType {
 }
 
 // GetDevice provides a mock function with given fields:
-func (_m *MockDeviceDriver) GetDevice() (io.ReadWriteCloser, error) {
+func (_m *MockDeviceDriver) GetDevice() (io.ReadWriteCloser, string, error) {
 	ret := _m.Called()
 
 	var r0 io.ReadWriteCloser
@@ -38,14 +38,21 @@ func (_m *MockDeviceDriver) GetDevice() (io.ReadWriteCloser, error) {
 		}
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func() error); ok {
+	var r1 string
+	if rf, ok := ret.Get(1).(func() string); ok {
 		r1 = rf()
 	} else {
-		r1 = ret.Error(1)
+		r1 = ret.Get(1).(string)
 	}
 
-	return r0, r1
+	var r2 error
+	if rf, ok := ret.Get(2).(func() error); ok {
+		r2 = rf()
+	} else {
+		r2 = ret.Error(2)
+	}
+
+	return r0, r1, r2
 }
 
 // SendToDevice provides a mock function with given fields: dev, chunks

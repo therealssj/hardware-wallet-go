@@ -46,7 +46,7 @@ const (
 type DeviceDriver interface {
 	SendToDevice(dev io.ReadWriteCloser, chunks [][64]byte) (wire.Message, error)
 	SendToDeviceNoAnswer(dev io.ReadWriteCloser, chunks [][64]byte) error
-	GetDevice() (io.ReadWriteCloser, error)
+	GetDevice() (io.ReadWriteCloser, string, error)
 	DeviceType() DeviceType
 }
 
@@ -71,20 +71,22 @@ func (drv *Driver) SendToDevice(dev io.ReadWriteCloser, chunks [][64]byte) (wire
 }
 
 // GetDevice returns a device instance
-func (drv *Driver) GetDevice() (io.ReadWriteCloser, error) {
+func (drv *Driver) GetDevice() (io.ReadWriteCloser, string, error) {
 	var dev io.ReadWriteCloser
 	var err error
+	var path string
+
 	switch drv.DeviceType() {
 	case DeviceTypeEmulator:
 		dev, err = getEmulatorDevice()
 	case DeviceTypeUSB:
-		dev, err = getUsbDevice()
+		dev, path, err = getUsbDevice()
 	}
 
 	if dev == nil && err == nil {
-		err = errors.New("No device connected")
+		err = errors.New("no device connected")
 	}
-	return dev, err
+	return dev, path, err
 }
 
 func sendToDeviceNoAnswer(dev io.ReadWriteCloser, chunks [][64]byte) error {
@@ -114,37 +116,70 @@ func getEmulatorDevice() (net.Conn, error) {
 	return net.Dial("udp", "127.0.0.1:21324")
 }
 
-// getUsbDevice returns a usb device connection instance
-func getUsbDevice() (usb.Device, error) {
+// getUsbDevice returns a usb device connection instance and the path
+func getUsbDevice() (usb.Device, string, error) {
 	w, err := usb.InitWebUSB()
 	if err != nil {
-		log.Printf("webusb: %s", err)
-		return nil, err
+		log.Errorf("webusb: %s", err)
+		return nil, "", err
 	}
 	h, err := usb.InitHIDAPI()
 	if err != nil {
-		log.Printf("hidapi: %s", err)
-		return nil, err
+		log.Errorf("hidapi: %s", err)
+		return nil, "", err
 	}
 	b := usb.Init(w, h)
 
 	var infos []usb.Info
 	infos, err = b.Enumerate()
 	if len(infos) <= 0 {
-		return nil, err
+		return nil, "", err
 	}
 	tries := 0
 	for tries < 3 {
 		dev, err := b.Connect(infos[0].Path)
 		if err != nil {
-			log.Print(err.Error())
+			log.Error(err)
 			tries++
 			time.Sleep(100 * time.Millisecond)
 		} else {
-			return dev, err
+			return dev, infos[0].Path, err
 		}
 	}
-	return nil, err
+	return nil, "", err
+}
+
+func available(id string) bool {
+	w, err := usb.InitWebUSB()
+	if err != nil {
+		log.Printf("webusb: %s", err)
+		return false
+	}
+	h, err := usb.InitHIDAPI()
+	if err != nil {
+		log.Printf("hidapi: %s", err)
+		return false
+	}
+	b := usb.Init(w, h)
+
+	var infos []usb.Info
+	infos, err = b.Enumerate()
+	if err != nil {
+		log.Error(err)
+		return false
+	}
+
+	if len(infos) <= 0 {
+		return false
+	}
+
+	for _, info := range infos {
+		if info.Path == id {
+			return true
+		}
+	}
+
+	return false
 }
 
 func binaryWrite(message io.Writer, data interface{}) {
