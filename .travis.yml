@@ -30,7 +30,6 @@ before_script:
   # Install hardware wallet for running tests against emulator
   - mkdir -p tmp/hardware-wallet
   - git clone --depth=1 --single-branch --branch develop https://github.com/skycoin/hardware-wallet.git tmp/hardware-wallet
-  - git -C tmp/hardware-wallet submodule update --init
   # Install OS-specific test and build dependencies for hardware-wallet
   - ( cd ./tmp/hardware-wallet && sh "ci-scripts/install-${TRAVIS_OS_NAME}.sh" )
   # Define env vars for Linux builds
@@ -58,7 +57,6 @@ script:
     make -C ./tmp/hardware-wallet run-emulator & true ;
     fi
   # Run self-tests
-  - make lint
   - ps aux | grep emulator
   - make test
   # Test that dependencies can be updated
