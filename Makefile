@@ -4,6 +4,8 @@
 .PHONY: dep mocks
 .PHONY: clean lint check format
 
+GOPATH  ?= $(HOME)/go
+
 all: build
 
 build:
@@ -20,10 +22,13 @@ mocks: ## Create all mock files for unit tests
 test_unit: ## Run unit tests
 	go test -v github.com/skycoin/hardware-wallet-go/src/device-wallet
 
-test_integration: ## Run integration tests
-	go test -count=1 -v github.com/skycoin/hardware-wallet-go/src/device-wallet/integration
+integration-test-emulator: ## Run emulator integration tests
+	./ci-scripts/integration-test.sh -m EMULATOR -n emulator-integration
 
-test: test_unit test_integration ## Run all tests
+integration-test-wallet: ## Run usb integration tests
+	./ci-scripts/integration-test.sh -m USB -n wallet-integration
+
+test: test_unit integration-test-emulator ## Run all tests
 
 install-linters: ## Install linters
 	go get -u github.com/FiloSottile/vendorcheck

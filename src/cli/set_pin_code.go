@@ -31,7 +31,7 @@ func setPinCode() gcli.Command {
 			}
 
 			var pinEnc string
-			msg, err := device.ChangePin(nil)
+			msg, err := device.ChangePin(new(bool))
 			if err != nil {
 				log.Error(err)
 				return

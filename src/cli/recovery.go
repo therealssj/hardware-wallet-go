@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"os"
 
 	gcli "github.com/urfave/cli"
 
@@ -58,7 +59,8 @@ func recoveryCmd() gcli.Command {
 				fmt.Scanln(&word)
 				msg, err = device.WordAck(word)
 				if err != nil {
-					log.Error(err)
+					log.Error(err.Error())
+					os.Exit(1)
 					return
 				}
 			}

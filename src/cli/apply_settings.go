@@ -98,7 +98,7 @@ func applySettingsCmd() gcli.Command {
 					log.Error(err)
 					return
 				}
-				fmt.Println("Failed with code: ", failMsg)
+				fmt.Println(failMsg)
 				return
 			}
 
@@ -108,7 +108,7 @@ func applySettingsCmd() gcli.Command {
 					log.Error(err)
 					return
 				}
-				fmt.Println("Success with code: ", successMsg)
+				fmt.Println(successMsg)
 				return
 			}
 		},

@@ -263,8 +263,6 @@ func DecodeFailMsg(msg wire.Message) (string, error) {
 
 // DecodeResponseSkycoinAddress convert byte data into list of addresses, meant to be used after DevicePinMatrixAck
 func DecodeResponseSkycoinAddress(msg wire.Message) ([]string, error) {
-	log.Printf("%x\n", msg.Data)
-
 	if msg.Kind == uint16(messages.MessageType_MessageType_ResponseSkycoinAddress) {
 		responseSkycoinAddress := &messages.ResponseSkycoinAddress{}
 		err := proto.Unmarshal(msg.Data, responseSkycoinAddress)

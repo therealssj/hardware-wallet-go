@@ -52,7 +52,7 @@ func addressGenCmd() gcli.Command {
 
 			var pinEnc string
 			var msg wire.Message
-			msg, err := device.AddressGen(addressN, startIndex, confirmAddress)
+			msg, err := device.AddressGen(uint32(addressN), uint32(startIndex), confirmAddress)
 			if err != nil {
 				log.Error(err)
 				return

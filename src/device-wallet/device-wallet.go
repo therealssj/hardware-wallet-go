@@ -39,12 +39,24 @@ const (
 )
 
 var connLock sync.Mutex
+var (
+	// ErrAddressNZero is returned if addressN is 0
+	ErrAddressNZero = errors.New("addresses to generate should be greater than 0")
+	// ErrUsePassPhraseNil is returned if usePassphrase is nil
+	ErrUsePassPhraseNil = errors.New("usePassphrase cannot be nil")
+	// ErrRemovePinNil is returned if removePin is nil
+	ErrRemovePinNil = errors.New("removePin cannot be nil")
+	// ErrDeviceTypeEmulator is returned if device type is emulator
+	ErrDeviceTypeEmulator = errors.New("device type cannot be emulator")
+	// ErrInvalidWordCount is returned if word count is not valid mnemonic word length
+	ErrInvalidWordCount = errors.New("word count must be 12 or 24")
+)
 
 //go:generate mockery -name Devicer -case underscore -inpkg -testonly
 
 // Devicer provides api for the hw wallet functions
 type Devicer interface {
-	AddressGen(addressN, startIndex int, confirmAddress bool) (wire.Message, error)
+	AddressGen(addressN, startIndex uint32, confirmAddress bool) (wire.Message, error)
 	ApplySettings(usePassphrase *bool, label string, language string) (wire.Message, error)
 	Backup() (wire.Message, error)
 	Cancel() (wire.Message, error)
@@ -158,11 +170,15 @@ func (d *Device) GetUsbInfo() ([]usb.Info, error) {
 }
 
 // AddressGen Ask the device to generate an address
-func (d *Device) AddressGen(addressN, startIndex int, confirmAddress bool) (wire.Message, error) {
+func (d *Device) AddressGen(addressN, startIndex uint32, confirmAddress bool) (wire.Message, error) {
 	if err := d.Connect(); err != nil {
 		return wire.Message{}, err
 	}
 	defer d.dev.Close()
+
+	if addressN == 0 {
+		return wire.Message{}, ErrAddressNZero
+	}
 
 	chunks, err := MessageAddressGen(addressN, startIndex, confirmAddress)
 	if err != nil {
@@ -339,6 +355,11 @@ func (d *Device) ApplySettings(usePassphrase *bool, label string, language strin
 		return wire.Message{}, err
 	}
 	defer d.dev.Close()
+
+	if usePassphrase == nil {
+		return wire.Message{}, ErrUsePassPhraseNil
+	}
+
 	chunks, err := MessageApplySettings(usePassphrase, label, language)
 	if err != nil {
 		return wire.Message{}, err
@@ -355,13 +376,7 @@ func (d *Device) Backup() (wire.Message, error) {
 	defer d.dev.Close()
 	var msg wire.Message
 
-	var chunks [][64]byte
-	err := Initialize(d.dev)
-	if err != nil {
-		return wire.Message{}, err
-	}
-
-	chunks, err = MessageBackup()
+	chunks, err := MessageBackup()
 	if err != nil {
 		return wire.Message{}, err
 	}
@@ -432,6 +447,11 @@ func (d *Device) ChangePin(removePin *bool) (wire.Message, error) {
 		return wire.Message{}, err
 	}
 	defer d.dev.Close()
+
+	if removePin == nil {
+		return wire.Message{}, ErrRemovePinNil
+	}
+
 	chunks, err := MessageChangePin(removePin)
 	if err != nil {
 		return wire.Message{}, err
@@ -495,7 +515,7 @@ func (d *Device) Available() bool {
 // FirmwareUpload Updates device's firmware
 func (d *Device) FirmwareUpload(payload []byte, hash [32]byte) error {
 	if d.Driver.DeviceType() != DeviceTypeUSB {
-		return errors.New("wrong device type")
+		return ErrDeviceTypeEmulator
 	}
 	if err := d.Connect(); err != nil {
 		return err
@@ -566,7 +586,6 @@ func (d *Device) FirmwareUpload(payload []byte, hash [32]byte) error {
 		default:
 			return errors.New("unknown response")
 		}
-		return nil
 	case uint16(messages.MessageType_MessageType_Failure):
 		msg, err := DecodeFailMsg(erasemsg)
 		if err != nil {
@@ -599,6 +618,11 @@ func (d *Device) GenerateMnemonic(wordCount uint32, usePassphrase bool) (wire.Me
 		return wire.Message{}, err
 	}
 	defer d.dev.Close()
+
+	if wordCount != 12 && wordCount != 24 {
+		return wire.Message{}, ErrInvalidWordCount
+	}
+
 	generateMnemonicChunks, err := MessageGenerateMnemonic(wordCount, usePassphrase)
 	if err != nil {
 		return wire.Message{}, err
@@ -637,6 +661,10 @@ func (d *Device) Recovery(wordCount uint32, usePassphrase, dryRun bool) (wire.Me
 	defer d.dev.Close()
 	var msg wire.Message
 	var chunks [][64]byte
+
+	if wordCount != 12 && wordCount != 24 {
+		return wire.Message{}, ErrInvalidWordCount
+	}
 
 	log.Printf("Using passphrase %t\n", usePassphrase)
 	chunks, err := MessageRecovery(wordCount, usePassphrase, dryRun)
@@ -721,12 +749,7 @@ func (d *Device) Wipe() (wire.Message, error) {
 	defer d.dev.Close()
 	var chunks [][64]byte
 
-	err := Initialize(d.dev)
-	if err != nil {
-		return wire.Message{}, err
-	}
-
-	chunks, err = MessageWipe()
+	chunks, err := MessageWipe()
 	if err != nil {
 		return wire.Message{}, err
 	}

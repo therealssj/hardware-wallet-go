@@ -83,7 +83,7 @@ func signMessageCmd() gcli.Command {
 					log.Error(err)
 					return
 				}
-				fmt.Printf("Success %d! the signature is: %s\n", msg.Kind, signature)
+				fmt.Print(signature)
 			} else {
 				failMsg, err := deviceWallet.DecodeFailMsg(msg)
 				if err != nil {
