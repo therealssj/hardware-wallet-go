@@ -42,7 +42,6 @@ func featuresCmd() gcli.Command {
 				}
 			}
 
-
 			msg, err := device.GetFeatures()
 			if err != nil {
 				log.Error(err)

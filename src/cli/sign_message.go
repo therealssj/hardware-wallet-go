@@ -2,6 +2,8 @@ package cli
 
 import (
 	"fmt"
+	"os"
+	"runtime"
 
 	"github.com/skycoin/hardware-wallet-go/src/device-wallet/wire"
 

@@ -2,13 +2,14 @@ package cli
 
 import (
 	"fmt"
-	"github.com/skycoin/hardware-wallet-go/src/device-wallet/wire"
 	"os"
 	"runtime"
 
-	gcli "github.com/urfave/cli"
+	messages "github.com/skycoin/hardware-wallet-protob/go"
 
-	"github.com/skycoin/hardware-wallet-protob/go"
+	"github.com/skycoin/hardware-wallet-go/src/device-wallet/wire"
+
+	gcli "github.com/urfave/cli"
 
 	deviceWallet "github.com/skycoin/hardware-wallet-go/src/device-wallet"
 )

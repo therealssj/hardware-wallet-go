@@ -3,6 +3,7 @@ package cli
 import (
 	"fmt"
 	"os"
+	"runtime"
 
 	"github.com/gogo/protobuf/proto"
 
