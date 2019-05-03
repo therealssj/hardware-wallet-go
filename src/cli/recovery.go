@@ -44,6 +44,14 @@ func recoveryCmd() gcli.Command {
 				return
 			}
 
+			if os.Getenv("AUTO_PRESS_BUTTONS") == "1" && device.Driver.DeviceType() == deviceWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
+				err := device.SetAutoPressButton(true, deviceWallet.ButtonRight)
+				if err != nil {
+					log.Error(err)
+					return
+				}
+			}
+
 			passphrase := c.Bool("usePassphrase")
 			dryRun := c.Bool("dryRun")
 			wordCount := uint32(c.Uint64("wordCount"))

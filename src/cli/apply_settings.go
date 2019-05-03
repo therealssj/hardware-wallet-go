@@ -2,12 +2,13 @@ package cli
 
 import (
 	"fmt"
-
 	"github.com/skycoin/hardware-wallet-go/src/device-wallet/wire"
+	"os"
+	"runtime"
 
 	gcli "github.com/urfave/cli"
 
-	messages "github.com/skycoin/hardware-wallet-protob/go"
+	"github.com/skycoin/hardware-wallet-protob/go"
 
 	deviceWallet "github.com/skycoin/hardware-wallet-go/src/device-wallet"
 )
@@ -47,6 +48,14 @@ func applySettingsCmd() gcli.Command {
 			device := deviceWallet.NewDevice(deviceWallet.DeviceTypeFromString(c.String("deviceType")))
 			if device == nil {
 				return
+			}
+
+			if os.Getenv("AUTO_PRESS_BUTTONS") == "1" && device.Driver.DeviceType() == deviceWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
+				err := device.SetAutoPressButton(true, deviceWallet.ButtonRight)
+				if err != nil {
+					log.Error(err)
+					return
+				}
 			}
 
 			var msg wire.Message

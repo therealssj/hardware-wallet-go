@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"runtime"
 
 	"github.com/gogo/protobuf/proto"
 	gcli "github.com/urfave/cli"
@@ -32,6 +33,15 @@ func featuresCmd() gcli.Command {
 			if device == nil {
 				return
 			}
+
+			if os.Getenv("AUTO_PRESS_BUTTONS") == "1" && device.Driver.DeviceType() == deviceWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
+				err := device.SetAutoPressButton(true, deviceWallet.ButtonRight)
+				if err != nil {
+					log.Error(err)
+					return
+				}
+			}
+
 
 			msg, err := device.GetFeatures()
 			if err != nil {

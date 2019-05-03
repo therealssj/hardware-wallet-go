@@ -23,7 +23,7 @@ test_unit: ## Run unit tests
 	go test -v github.com/skycoin/hardware-wallet-go/src/device-wallet
 
 integration-test-emulator: ## Run emulator integration tests
-	./ci-scripts/integration-test.sh -m EMULATOR -n emulator-integration
+	./ci-scripts/integration-test.sh -a -m EMULATOR -n emulator-integration
 
 integration-test-wallet: ## Run usb integration tests
 	./ci-scripts/integration-test.sh -m USB -n wallet-integration

@@ -40,6 +40,14 @@ func generateMnemonicCmd() gcli.Command {
 				return
 			}
 
+			if os.Getenv("AUTO_PRESS_BUTTONS") == "1" && device.Driver.DeviceType() == deviceWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
+				err := device.SetAutoPressButton(true, deviceWallet.ButtonRight)
+				if err != nil {
+					log.Error(err)
+					return
+				}
+			}
+
 			msg, err := device.GenerateMnemonic(wordCount, usePassphrase)
 			if err != nil {
 				log.Error(err)

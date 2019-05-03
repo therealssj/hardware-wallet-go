@@ -11,6 +11,7 @@ VERBOSE=""
 RUN_TESTS=""
 FAILFAST=""
 NAME=""
+AUTO_PRESS_BUTTONS=""
 
 usage () {
   echo "Usage: $SCRIPT"
@@ -20,10 +21,11 @@ usage () {
   echo "-n <string>  -- Specific name for this test, affects coverage output files"
   echo "-v <boolean> -- Run test with -v flag"
   echo "-f <boolean> -- Run test with -failfast flag"
+  echo "-a <boolean> -- Auto press buttons in emulator mode"
   exit 1
 }
 
-while getopts "h?m:r:n:uvfca" args; do
+while getopts "h?m:r:n:vfa" args; do
 case $args in
     h|\?)
         usage;
@@ -33,13 +35,14 @@ case $args in
     n ) NAME="-${OPTARG}";;
     v ) VERBOSE="-v";;
     f ) FAILFAST="-failfast";;
+    a ) AUTO_PRESS_BUTTONS="1";;
   esac
 done
 
 
 set +e
 
-HW_GO_INTEGRATION_TESTS=1 HW_GO_INTEGRATION_TEST_MODE=$MODE \
+HW_GO_INTEGRATION_TESTS=1 HW_GO_INTEGRATION_TEST_MODE=$MODE AUTO_PRESS_BUTTONS=$AUTO_PRESS_BUTTONS \
     go test ./src/cli/integration/... $FAILFAST -timeout=$TIMEOUT $VERBOSE $RUN_TESTS
 
 TEST_FAIL=$?

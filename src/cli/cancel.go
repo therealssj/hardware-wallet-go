@@ -2,6 +2,7 @@ package cli
 
 import (
 	"fmt"
+	"os"
 
 	gcli "github.com/urfave/cli"
 
@@ -26,6 +27,14 @@ func cancelCmd() gcli.Command {
 			device := deviceWallet.NewDevice(deviceWallet.DeviceTypeFromString(c.String("deviceType")))
 			if device == nil {
 				return
+			}
+
+			if os.Getenv("AUTO_PRESS_BUTTONS") == "1" && device.Driver.DeviceType() == deviceWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
+				err := device.SetAutoPressButton(true, deviceWallet.ButtonRight)
+				if err != nil {
+					log.Error(err)
+					return
+				}
 			}
 
 			msg, err := device.Cancel()
