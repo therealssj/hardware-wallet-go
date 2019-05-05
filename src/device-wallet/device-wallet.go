@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"sync"
 	"time"
 
 	"github.com/skycoin/hardware-wallet-go/src/device-wallet/usb"
@@ -38,7 +37,6 @@ const (
 	ButtonBoth
 )
 
-var connLock sync.Mutex
 var (
 	// ErrAddressNZero is returned if addressN is 0
 	ErrAddressNZero = errors.New("addresses to generate should be greater than 0")
@@ -128,8 +126,6 @@ func NewDevice(deviceType DeviceType) (device *Device) {
 // Connect makes a connection to the connected device
 func (d *Device) Connect() error {
 	// close any existing connections
-	connLock.Lock()
-	defer connLock.Unlock()
 	if d.dev != nil {
 		d.dev.Close()
 		d.dev = nil
