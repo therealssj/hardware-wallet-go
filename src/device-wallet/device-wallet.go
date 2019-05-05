@@ -697,7 +697,20 @@ func (d *Device) SignMessage(addressIndex int, message string) (wire.Message, er
 	if err != nil {
 		return wire.Message{}, err
 	}
-	return d.Driver.SendToDevice(d.dev, chunks)
+
+	msg, err := d.Driver.SendToDevice(d.dev, chunks)
+	if err != nil {
+		return wire.Message{}, err
+	}
+
+	if msg.Kind == uint16(messages.MessageType_MessageType_ButtonRequest) {
+		msg, err = d.ButtonAck()
+		if err != nil {
+			return wire.Message{}, err
+		}
+	}
+
+	return msg, err
 }
 
 // TransactionSign Ask the device to sign a transaction using the given information.
