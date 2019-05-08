@@ -4,16 +4,12 @@
 
 package usb
 
-import (
-	"github.com/skycoin/hardware-wallet-go/src/skywallet/memorywriter"
-)
-
 const HIDUse = false
 
 type HIDAPI struct {
 }
 
-func InitHIDAPI(mw *memorywriter.MemoryWriter) (*HIDAPI, error) {
+func InitHIDAPI() (*HIDAPI, error) {
 	return &HIDAPI{}, nil
 }
 
