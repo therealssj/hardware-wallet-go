@@ -77,16 +77,14 @@ func (_m *MockDeviceDriver) GetDeviceInfos() ([]usb.Info, error) {
 }
 
 // SendToDevice provides a mock function with given fields: dev, chunks
-func (_m *MockDeviceDriver) SendToDevice(dev usb.Device, chunks [][64]byte) (*wire.Message, error) {
+func (_m *MockDeviceDriver) SendToDevice(dev usb.Device, chunks [][64]byte) (wire.Message, error) {
 	ret := _m.Called(dev, chunks)
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func(usb.Device, [][64]byte) *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func(usb.Device, [][64]byte) wire.Message); ok {
 		r0 = rf(dev, chunks)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error

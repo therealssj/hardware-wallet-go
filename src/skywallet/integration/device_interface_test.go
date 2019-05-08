@@ -221,7 +221,7 @@ func TestGetAddressEmulator(t *testing.T) {
 	require.Equal(t, addresses[1], "zC8GAQGQBfwk7vtTxVoRG7iMperHNuyYPs")
 }
 
-func TransactionToDevice(t *testing.T, deviceType skywallet.DeviceType, transactionInputs []*messages.SkycoinTransactionInput, transactionOutputs []*messages.SkycoinTransactionOutput) *wire.Message {
+func TransactionToDevice(t *testing.T, deviceType skywallet.DeviceType, transactionInputs []*messages.SkycoinTransactionInput, transactionOutputs []*messages.SkycoinTransactionOutput) wire.Message {
 	device := skywallet.NewDevice(deviceType)
 	if device == nil {
 		t.Fatalf("invalid device type: %s", deviceType)

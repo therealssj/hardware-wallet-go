@@ -332,6 +332,7 @@ func TestRecovery(t *testing.T) {
 		scanner.Split(bufio.ScanWords)
 		for scanner.Scan() {
 			m := scanner.Text()
+			fmt.Println(m)
 			if m == "Word:" {
 				time.Sleep(1 * time.Second)
 				_, err := stdInPipe.Write([]byte("foobar\n"))

@@ -12,16 +12,14 @@ type MockDevicer struct {
 }
 
 // AddressGen provides a mock function with given fields: addressN, startIndex, confirmAddress
-func (_m *MockDevicer) AddressGen(addressN uint32, startIndex uint32, confirmAddress bool) (*wire.Message, error) {
+func (_m *MockDevicer) AddressGen(addressN uint32, startIndex uint32, confirmAddress bool) (wire.Message, error) {
 	ret := _m.Called(addressN, startIndex, confirmAddress)
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func(uint32, uint32, bool) *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func(uint32, uint32, bool) wire.Message); ok {
 		r0 = rf(addressN, startIndex, confirmAddress)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -35,16 +33,14 @@ func (_m *MockDevicer) AddressGen(addressN uint32, startIndex uint32, confirmAdd
 }
 
 // ApplySettings provides a mock function with given fields: usePassphrase, label, language
-func (_m *MockDevicer) ApplySettings(usePassphrase *bool, label string, language string) (*wire.Message, error) {
+func (_m *MockDevicer) ApplySettings(usePassphrase *bool, label string, language string) (wire.Message, error) {
 	ret := _m.Called(usePassphrase, label, language)
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func(*bool, string, string) *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func(*bool, string, string) wire.Message); ok {
 		r0 = rf(usePassphrase, label, language)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -72,16 +68,14 @@ func (_m *MockDevicer) Available() bool {
 }
 
 // Backup provides a mock function with given fields:
-func (_m *MockDevicer) Backup() (*wire.Message, error) {
+func (_m *MockDevicer) Backup() (wire.Message, error) {
 	ret := _m.Called()
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func() *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func() wire.Message); ok {
 		r0 = rf()
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -95,16 +89,14 @@ func (_m *MockDevicer) Backup() (*wire.Message, error) {
 }
 
 // ButtonAck provides a mock function with given fields:
-func (_m *MockDevicer) ButtonAck() (*wire.Message, error) {
+func (_m *MockDevicer) ButtonAck() (wire.Message, error) {
 	ret := _m.Called()
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func() *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func() wire.Message); ok {
 		r0 = rf()
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -118,16 +110,14 @@ func (_m *MockDevicer) ButtonAck() (*wire.Message, error) {
 }
 
 // Cancel provides a mock function with given fields:
-func (_m *MockDevicer) Cancel() (*wire.Message, error) {
+func (_m *MockDevicer) Cancel() (wire.Message, error) {
 	ret := _m.Called()
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func() *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func() wire.Message); ok {
 		r0 = rf()
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -141,16 +131,14 @@ func (_m *MockDevicer) Cancel() (*wire.Message, error) {
 }
 
 // ChangePin provides a mock function with given fields: removePin
-func (_m *MockDevicer) ChangePin(removePin *bool) (*wire.Message, error) {
+func (_m *MockDevicer) ChangePin(removePin *bool) (wire.Message, error) {
 	ret := _m.Called(removePin)
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func(*bool) *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func(*bool) wire.Message); ok {
 		r0 = rf(removePin)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -164,16 +152,14 @@ func (_m *MockDevicer) ChangePin(removePin *bool) (*wire.Message, error) {
 }
 
 // CheckMessageSignature provides a mock function with given fields: message, signature, address
-func (_m *MockDevicer) CheckMessageSignature(message string, signature string, address string) (*wire.Message, error) {
+func (_m *MockDevicer) CheckMessageSignature(message string, signature string, address string) (wire.Message, error) {
 	ret := _m.Called(message, signature, address)
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func(string, string, string) *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func(string, string, string) wire.Message); ok {
 		r0 = rf(message, signature, address)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -220,16 +206,14 @@ func (_m *MockDevicer) FirmwareUpload(payload []byte, hash [32]byte) error {
 }
 
 // GenerateMnemonic provides a mock function with given fields: wordCount, usePassphrase
-func (_m *MockDevicer) GenerateMnemonic(wordCount uint32, usePassphrase bool) (*wire.Message, error) {
+func (_m *MockDevicer) GenerateMnemonic(wordCount uint32, usePassphrase bool) (wire.Message, error) {
 	ret := _m.Called(wordCount, usePassphrase)
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func(uint32, bool) *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func(uint32, bool) wire.Message); ok {
 		r0 = rf(wordCount, usePassphrase)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -243,16 +227,14 @@ func (_m *MockDevicer) GenerateMnemonic(wordCount uint32, usePassphrase bool) (*
 }
 
 // GetFeatures provides a mock function with given fields:
-func (_m *MockDevicer) GetFeatures() (*wire.Message, error) {
+func (_m *MockDevicer) GetFeatures() (wire.Message, error) {
 	ret := _m.Called()
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func() *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func() wire.Message); ok {
 		r0 = rf()
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -266,16 +248,14 @@ func (_m *MockDevicer) GetFeatures() (*wire.Message, error) {
 }
 
 // PassphraseAck provides a mock function with given fields: passphrase
-func (_m *MockDevicer) PassphraseAck(passphrase string) (*wire.Message, error) {
+func (_m *MockDevicer) PassphraseAck(passphrase string) (wire.Message, error) {
 	ret := _m.Called(passphrase)
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func(string) *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func(string) wire.Message); ok {
 		r0 = rf(passphrase)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -289,16 +269,14 @@ func (_m *MockDevicer) PassphraseAck(passphrase string) (*wire.Message, error) {
 }
 
 // PinMatrixAck provides a mock function with given fields: p
-func (_m *MockDevicer) PinMatrixAck(p string) (*wire.Message, error) {
+func (_m *MockDevicer) PinMatrixAck(p string) (wire.Message, error) {
 	ret := _m.Called(p)
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func(string) *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func(string) wire.Message); ok {
 		r0 = rf(p)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -312,16 +290,14 @@ func (_m *MockDevicer) PinMatrixAck(p string) (*wire.Message, error) {
 }
 
 // Recovery provides a mock function with given fields: wordCount, usePassphrase, dryRun
-func (_m *MockDevicer) Recovery(wordCount uint32, usePassphrase bool, dryRun bool) (*wire.Message, error) {
+func (_m *MockDevicer) Recovery(wordCount uint32, usePassphrase bool, dryRun bool) (wire.Message, error) {
 	ret := _m.Called(wordCount, usePassphrase, dryRun)
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func(uint32, bool, bool) *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func(uint32, bool, bool) wire.Message); ok {
 		r0 = rf(wordCount, usePassphrase, dryRun)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -349,16 +325,14 @@ func (_m *MockDevicer) SetAutoPressButton(simulateButtonPress bool, simulateButt
 }
 
 // SetMnemonic provides a mock function with given fields: mnemonic
-func (_m *MockDevicer) SetMnemonic(mnemonic string) (*wire.Message, error) {
+func (_m *MockDevicer) SetMnemonic(mnemonic string) (wire.Message, error) {
 	ret := _m.Called(mnemonic)
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func(string) *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func(string) wire.Message); ok {
 		r0 = rf(mnemonic)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -372,16 +346,14 @@ func (_m *MockDevicer) SetMnemonic(mnemonic string) (*wire.Message, error) {
 }
 
 // SignMessage provides a mock function with given fields: addressIndex, message
-func (_m *MockDevicer) SignMessage(addressIndex int, message string) (*wire.Message, error) {
+func (_m *MockDevicer) SignMessage(addressIndex int, message string) (wire.Message, error) {
 	ret := _m.Called(addressIndex, message)
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func(int, string) *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func(int, string) wire.Message); ok {
 		r0 = rf(addressIndex, message)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -395,16 +367,14 @@ func (_m *MockDevicer) SignMessage(addressIndex int, message string) (*wire.Mess
 }
 
 // TransactionSign provides a mock function with given fields: inputs, outputs
-func (_m *MockDevicer) TransactionSign(inputs []*messages.SkycoinTransactionInput, outputs []*messages.SkycoinTransactionOutput) (*wire.Message, error) {
+func (_m *MockDevicer) TransactionSign(inputs []*messages.SkycoinTransactionInput, outputs []*messages.SkycoinTransactionOutput) (wire.Message, error) {
 	ret := _m.Called(inputs, outputs)
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func([]*messages.SkycoinTransactionInput, []*messages.SkycoinTransactionOutput) *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func([]*messages.SkycoinTransactionInput, []*messages.SkycoinTransactionOutput) wire.Message); ok {
 		r0 = rf(inputs, outputs)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -418,16 +388,14 @@ func (_m *MockDevicer) TransactionSign(inputs []*messages.SkycoinTransactionInpu
 }
 
 // Wipe provides a mock function with given fields:
-func (_m *MockDevicer) Wipe() (*wire.Message, error) {
+func (_m *MockDevicer) Wipe() (wire.Message, error) {
 	ret := _m.Called()
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func() *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func() wire.Message); ok {
 		r0 = rf()
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error
@@ -441,16 +409,14 @@ func (_m *MockDevicer) Wipe() (*wire.Message, error) {
 }
 
 // WordAck provides a mock function with given fields: word
-func (_m *MockDevicer) WordAck(word string) (*wire.Message, error) {
+func (_m *MockDevicer) WordAck(word string) (wire.Message, error) {
 	ret := _m.Called(word)
 
-	var r0 *wire.Message
-	if rf, ok := ret.Get(0).(func(string) *wire.Message); ok {
+	var r0 wire.Message
+	if rf, ok := ret.Get(0).(func(string) wire.Message); ok {
 		r0 = rf(word)
 	} else {
-		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(*wire.Message)
-		}
+		r0 = ret.Get(0).(wire.Message)
 	}
 
 	var r1 error

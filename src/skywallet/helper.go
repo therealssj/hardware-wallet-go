@@ -55,7 +55,7 @@ const (
 
 // DeviceDriver is the api for hardware wallet communication
 type DeviceDriver interface {
-	SendToDevice(dev usb.Device, chunks [][64]byte) (*wire.Message, error)
+	SendToDevice(dev usb.Device, chunks [][64]byte) (wire.Message, error)
 	SendToDeviceNoAnswer(dev usb.Device, chunks [][64]byte) error
 	GetDevice() (usb.Device, error)
 	GetDeviceInfos() ([]usb.Info, error)
@@ -125,7 +125,7 @@ func (drv *Driver) SendToDeviceNoAnswer(dev usb.Device, chunks [][64]byte) error
 }
 
 // SendToDevice sends msg to device and returns response
-func (drv *Driver) SendToDevice(dev usb.Device, chunks [][64]byte) (*wire.Message, error) {
+func (drv *Driver) SendToDevice(dev usb.Device, chunks [][64]byte) (wire.Message, error) {
 	return sendToDevice(dev, chunks)
 }
 
@@ -186,15 +186,17 @@ func sendToDeviceNoAnswer(dev usb.Device, chunks [][64]byte) error {
 	return nil
 }
 
-func sendToDevice(dev usb.Device, chunks [][64]byte) (*wire.Message, error) {
+func sendToDevice(dev usb.Device, chunks [][64]byte) (wire.Message, error) {
 	for _, element := range chunks {
 		_, err := dev.Write(element[:])
 		if err != nil {
-			return nil, err
+			return wire.Message{}, err
 		}
 	}
 
-	return wire.ReadFrom(dev)
+	msg, err := wire.ReadFrom(dev)
+
+	return *msg, err
 }
 
 func binaryWrite(message io.Writer, data interface{}) {
@@ -241,7 +243,7 @@ func Initialize(dev usb.Device) error {
 }
 
 // DecodeSuccessOrFailMsg parses a success or failure msg
-func DecodeSuccessOrFailMsg(msg *wire.Message) (string, error) {
+func DecodeSuccessOrFailMsg(msg wire.Message) (string, error) {
 	if msg.Kind == uint16(messages.MessageType_MessageType_Success) {
 		return DecodeSuccessMsg(msg)
 	}
@@ -253,7 +255,7 @@ func DecodeSuccessOrFailMsg(msg *wire.Message) (string, error) {
 }
 
 // DecodeSuccessMsg convert byte data into string containing the success message returned by the device
-func DecodeSuccessMsg(msg *wire.Message) (string, error) {
+func DecodeSuccessMsg(msg wire.Message) (string, error) {
 	if msg.Kind == uint16(messages.MessageType_MessageType_Success) {
 		success := &messages.Success{}
 		err := proto.Unmarshal(msg.Data, success)
@@ -267,7 +269,7 @@ func DecodeSuccessMsg(msg *wire.Message) (string, error) {
 }
 
 // DecodeFailMsg convert byte data into string containing the failure returned by the device
-func DecodeFailMsg(msg *wire.Message) (string, error) {
+func DecodeFailMsg(msg wire.Message) (string, error) {
 	if msg.Kind == uint16(messages.MessageType_MessageType_Failure) {
 		failure := &messages.Failure{}
 		err := proto.Unmarshal(msg.Data, failure)
@@ -280,7 +282,7 @@ func DecodeFailMsg(msg *wire.Message) (string, error) {
 }
 
 // DecodeResponseSkycoinAddress convert byte data into list of addresses, meant to be used after DevicePinMatrixAck
-func DecodeResponseSkycoinAddress(msg *wire.Message) ([]string, error) {
+func DecodeResponseSkycoinAddress(msg wire.Message) ([]string, error) {
 	if msg.Kind == uint16(messages.MessageType_MessageType_ResponseSkycoinAddress) {
 		responseSkycoinAddress := &messages.ResponseSkycoinAddress{}
 		err := proto.Unmarshal(msg.Data, responseSkycoinAddress)
@@ -294,7 +296,7 @@ func DecodeResponseSkycoinAddress(msg *wire.Message) ([]string, error) {
 }
 
 // DecodeResponseTransactionSign convert byte data into list of signatures
-func DecodeResponseTransactionSign(msg *wire.Message) ([]string, error) {
+func DecodeResponseTransactionSign(msg wire.Message) ([]string, error) {
 	if msg.Kind == uint16(messages.MessageType_MessageType_ResponseTransactionSign) {
 		responseSkycoinTransactionSign := &messages.ResponseTransactionSign{}
 		err := proto.Unmarshal(msg.Data, responseSkycoinTransactionSign)
@@ -308,7 +310,7 @@ func DecodeResponseTransactionSign(msg *wire.Message) ([]string, error) {
 }
 
 // DecodeResponseSkycoinSignMessage convert byte data into signed message, meant to be used after DevicePinMatrixAck
-func DecodeResponseSkycoinSignMessage(msg *wire.Message) (string, error) {
+func DecodeResponseSkycoinSignMessage(msg wire.Message) (string, error) {
 	if msg.Kind == uint16(messages.MessageType_MessageType_ResponseSkycoinSignMessage) {
 		responseSkycoinSignMessage := &messages.ResponseSkycoinSignMessage{}
 		err := proto.Unmarshal(msg.Data, responseSkycoinSignMessage)
@@ -321,7 +323,7 @@ func DecodeResponseSkycoinSignMessage(msg *wire.Message) (string, error) {
 }
 
 // DecodeResponseEntropyMessage convert byte data into entropy message, meant to be used after GetEntropy
-func DecodeResponseEntropyMessage(msg *wire.Message) (*messages.Entropy, error) {
+func DecodeResponseEntropyMessage(msg wire.Message) (*messages.Entropy, error) {
 	if msg.Kind == uint16(messages.MessageType_MessageType_Entropy) {
 		responseEntropyMessage := &messages.Entropy{}
 		err := proto.Unmarshal(msg.Data, responseEntropyMessage)
