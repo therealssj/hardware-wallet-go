@@ -7,11 +7,9 @@ import (
 
 	messages "github.com/skycoin/hardware-wallet-protob/go"
 
-	"github.com/skycoin/hardware-wallet-go/src/device-wallet/wire"
-
 	gcli "github.com/urfave/cli"
 
-	deviceWallet "github.com/skycoin/hardware-wallet-go/src/device-wallet"
+	skyWallet "github.com/skycoin/hardware-wallet-go/src/skywallet"
 )
 
 func addressGenCmd() gcli.Command {
@@ -47,13 +45,14 @@ func addressGenCmd() gcli.Command {
 			startIndex := c.Int("startIndex")
 			confirmAddress := c.Bool("confirmAddress")
 
-			device := deviceWallet.NewDevice(deviceWallet.DeviceTypeFromString(c.String("deviceType")))
+			device := skyWallet.NewDevice(skyWallet.DeviceTypeFromString(c.String("deviceType")))
 			if device == nil {
 				return
 			}
+			defer device.Close()
 
-			if os.Getenv("AUTO_PRESS_BUTTONS") == "1" && device.Driver.DeviceType() == deviceWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
-				err := device.SetAutoPressButton(true, deviceWallet.ButtonRight)
+			if os.Getenv("AUTO_PRESS_BUTTONS") == "1" && device.Driver.DeviceType() == skyWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
+				err := device.SetAutoPressButton(true, skyWallet.ButtonRight)
 				if err != nil {
 					log.Error(err)
 					return
@@ -61,7 +60,6 @@ func addressGenCmd() gcli.Command {
 			}
 
 			var pinEnc string
-			var msg wire.Message
 			msg, err := device.AddressGen(uint32(addressN), uint32(startIndex), confirmAddress)
 			if err != nil {
 				log.Error(err)
@@ -105,14 +103,14 @@ func addressGenCmd() gcli.Command {
 			}
 
 			if msg.Kind == uint16(messages.MessageType_MessageType_ResponseSkycoinAddress) {
-				addresses, err := deviceWallet.DecodeResponseSkycoinAddress(msg)
+				addresses, err := skyWallet.DecodeResponseSkycoinAddress(msg)
 				if err != nil {
 					log.Error(err)
 					return
 				}
 				fmt.Println(addresses)
 			} else {
-				failMsg, err := deviceWallet.DecodeFailMsg(msg)
+				failMsg, err := skyWallet.DecodeFailMsg(msg)
 				if err != nil {
 					log.Error(err)
 					return

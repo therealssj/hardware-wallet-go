@@ -13,12 +13,12 @@ import (
 	"testing"
 	"time"
 
+	"github.com/skycoin/hardware-wallet-go/src/skywallet"
+
 	"github.com/gogo/protobuf/proto"
 	messages "github.com/skycoin/hardware-wallet-protob/go"
 	"github.com/skycoin/skycoin/src/util/logging"
 	"github.com/stretchr/testify/require"
-
-	deviceWallet "github.com/skycoin/hardware-wallet-go/src/device-wallet"
 )
 
 var (
@@ -120,12 +120,12 @@ func doWalletOrEmulator(t *testing.T) bool {
 	return false
 }
 
-func bootstrap(t *testing.T, testname string) *deviceWallet.Device {
+func bootstrap(t *testing.T, testname string) *skywallet.Device {
 	if !doWalletOrEmulator(t) {
 		return nil
 	}
 
-	device := deviceWallet.NewDevice(deviceWallet.DeviceTypeFromString(mode(t)))
+	device := skywallet.NewDevice(skywallet.DeviceTypeFromString(mode(t)))
 	require.NotNil(t, device)
 
 	err := device.Connect()
@@ -137,8 +137,8 @@ func bootstrap(t *testing.T, testname string) *deviceWallet.Device {
 	}
 	require.NoError(t, device.Disconnect())
 
-	if device.Driver.DeviceType() == deviceWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
-		err := device.SetAutoPressButton(true, deviceWallet.ButtonRight)
+	if device.Driver.DeviceType() == skywallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
+		err := device.SetAutoPressButton(true, skywallet.ButtonRight)
 		require.NoError(t, err)
 	}
 
@@ -255,7 +255,7 @@ func TestGenerateMnemonic(t *testing.T) {
 		return
 	}
 
-	device := deviceWallet.NewDevice(deviceWallet.DeviceTypeFromString(mode(t)))
+	device := skywallet.NewDevice(skywallet.DeviceTypeFromString(mode(t)))
 	require.NotNil(t, device)
 
 	err := device.Connect()
@@ -267,8 +267,8 @@ func TestGenerateMnemonic(t *testing.T) {
 	}
 	require.NoError(t, device.Disconnect())
 
-	if device.Driver.DeviceType() == deviceWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
-		err := device.SetAutoPressButton(true, deviceWallet.ButtonRight)
+	if device.Driver.DeviceType() == skywallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
+		err := device.SetAutoPressButton(true, skywallet.ButtonRight)
 		require.NoError(t, err)
 	}
 
@@ -292,7 +292,7 @@ func TestRecovery(t *testing.T) {
 		return
 	}
 
-	device := deviceWallet.NewDevice(deviceWallet.DeviceTypeFromString(mode(t)))
+	device := skywallet.NewDevice(skywallet.DeviceTypeFromString(mode(t)))
 	require.NotNil(t, device)
 
 	err := device.Connect()
@@ -304,8 +304,8 @@ func TestRecovery(t *testing.T) {
 	}
 	require.NoError(t, device.Disconnect())
 
-	if device.Driver.DeviceType() == deviceWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
-		err := device.SetAutoPressButton(true, deviceWallet.ButtonRight)
+	if device.Driver.DeviceType() == skywallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
+		err := device.SetAutoPressButton(true, skywallet.ButtonRight)
 		require.NoError(t, err)
 	}
 
@@ -365,7 +365,7 @@ func TestSetMnemonic(t *testing.T) {
 		return
 	}
 
-	device := deviceWallet.NewDevice(deviceWallet.DeviceTypeFromString(mode(t)))
+	device := skywallet.NewDevice(skywallet.DeviceTypeFromString(mode(t)))
 	require.NotNil(t, device)
 
 	err := device.Connect()
@@ -377,8 +377,8 @@ func TestSetMnemonic(t *testing.T) {
 	}
 	require.NoError(t, device.Disconnect())
 
-	if device.Driver.DeviceType() == deviceWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
-		err := device.SetAutoPressButton(true, deviceWallet.ButtonRight)
+	if device.Driver.DeviceType() == skywallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
+		err := device.SetAutoPressButton(true, skywallet.ButtonRight)
 		require.NoError(t, err)
 	}
 

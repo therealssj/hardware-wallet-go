@@ -7,13 +7,11 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	"github.com/skycoin/hardware-wallet-go/src/device-wallet/wire"
-
 	gcli "github.com/urfave/cli"
 
 	messages "github.com/skycoin/hardware-wallet-protob/go"
 
-	deviceWallet "github.com/skycoin/hardware-wallet-go/src/device-wallet"
+	skyWallet "github.com/skycoin/hardware-wallet-go/src/skywallet"
 )
 
 func transactionSignCmd() gcli.Command {
@@ -62,13 +60,14 @@ func transactionSignCmd() gcli.Command {
 			hours := c.Int64Slice("hour")
 			addressIndex := c.IntSlice("addressIndex")
 
-			device := deviceWallet.NewDevice(deviceWallet.DeviceTypeFromString(c.String("deviceType")))
+			device := skyWallet.NewDevice(skyWallet.DeviceTypeFromString(c.String("deviceType")))
 			if device == nil {
 				return
 			}
+			defer device.Close()
 
-			if os.Getenv("AUTO_PRESS_BUTTONS") == "1" && device.Driver.DeviceType() == deviceWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
-				err := device.SetAutoPressButton(true, deviceWallet.ButtonRight)
+			if os.Getenv("AUTO_PRESS_BUTTONS") == "1" && device.Driver.DeviceType() == skyWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
+				err := device.SetAutoPressButton(true, skyWallet.ButtonRight)
 				if err != nil {
 					log.Error(err)
 					return
@@ -104,7 +103,6 @@ func transactionSignCmd() gcli.Command {
 				transactionOutputs = append(transactionOutputs, &transactionOutput)
 			}
 
-			var msg wire.Message
 			msg, err := device.TransactionSign(transactionInputs, transactionOutputs)
 			if err != nil {
 				log.Error(err)
@@ -114,7 +112,7 @@ func transactionSignCmd() gcli.Command {
 			for {
 				switch msg.Kind {
 				case uint16(messages.MessageType_MessageType_ResponseTransactionSign):
-					signatures, err := deviceWallet.DecodeResponseTransactionSign(msg)
+					signatures, err := skyWallet.DecodeResponseTransactionSign(msg)
 					if err != nil {
 						log.Error(err)
 						return
@@ -149,7 +147,7 @@ func transactionSignCmd() gcli.Command {
 						return
 					}
 				case uint16(messages.MessageType_MessageType_Failure):
-					failMsg, err := deviceWallet.DecodeFailMsg(msg)
+					failMsg, err := skyWallet.DecodeFailMsg(msg)
 					if err != nil {
 						log.Error(err)
 						return

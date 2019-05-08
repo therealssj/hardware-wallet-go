@@ -5,13 +5,11 @@ import (
 	"os"
 	"runtime"
 
-	"github.com/skycoin/hardware-wallet-go/src/device-wallet/wire"
-
 	gcli "github.com/urfave/cli"
 
 	messages "github.com/skycoin/hardware-wallet-protob/go"
 
-	deviceWallet "github.com/skycoin/hardware-wallet-go/src/device-wallet"
+	skyWallet "github.com/skycoin/hardware-wallet-go/src/skywallet"
 )
 
 func signMessageCmd() gcli.Command {
@@ -38,13 +36,14 @@ func signMessageCmd() gcli.Command {
 		},
 		OnUsageError: onCommandUsageError(name),
 		Action: func(c *gcli.Context) {
-			device := deviceWallet.NewDevice(deviceWallet.DeviceTypeFromString(c.String("deviceType")))
+			device := skyWallet.NewDevice(skyWallet.DeviceTypeFromString(c.String("deviceType")))
 			if device == nil {
 				return
 			}
+			defer device.Close()
 
-			if os.Getenv("AUTO_PRESS_BUTTONS") == "1" && device.Driver.DeviceType() == deviceWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
-				err := device.SetAutoPressButton(true, deviceWallet.ButtonRight)
+			if os.Getenv("AUTO_PRESS_BUTTONS") == "1" && device.Driver.DeviceType() == skyWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
+				err := device.SetAutoPressButton(true, skyWallet.ButtonRight)
 				if err != nil {
 					log.Error(err)
 					return
@@ -55,7 +54,6 @@ func signMessageCmd() gcli.Command {
 			message := c.String("message")
 			var signature string
 
-			var msg wire.Message
 			msg, err := device.SignMessage(addressN, message)
 			if err != nil {
 				log.Error(err)
@@ -88,14 +86,14 @@ func signMessageCmd() gcli.Command {
 			}
 
 			if msg.Kind == uint16(messages.MessageType_MessageType_ResponseSkycoinSignMessage) {
-				signature, err = deviceWallet.DecodeResponseSkycoinSignMessage(msg)
+				signature, err = skyWallet.DecodeResponseSkycoinSignMessage(msg)
 				if err != nil {
 					log.Error(err)
 					return
 				}
 				fmt.Print(signature)
 			} else {
-				failMsg, err := deviceWallet.DecodeFailMsg(msg)
+				failMsg, err := skyWallet.DecodeFailMsg(msg)
 				if err != nil {
 					log.Error(err)
 					return

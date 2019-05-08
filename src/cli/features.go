@@ -11,7 +11,7 @@ import (
 
 	messages "github.com/skycoin/hardware-wallet-protob/go"
 
-	deviceWallet "github.com/skycoin/hardware-wallet-go/src/device-wallet"
+	skyWallet "github.com/skycoin/hardware-wallet-go/src/skywallet"
 )
 
 func featuresCmd() gcli.Command {
@@ -29,13 +29,14 @@ func featuresCmd() gcli.Command {
 			},
 		},
 		Action: func(c *gcli.Context) {
-			device := deviceWallet.NewDevice(deviceWallet.DeviceTypeFromString(c.String("deviceType")))
+			device := skyWallet.NewDevice(skyWallet.DeviceTypeFromString(c.String("deviceType")))
 			if device == nil {
 				return
 			}
+			defer device.Close()
 
-			if os.Getenv("AUTO_PRESS_BUTTONS") == "1" && device.Driver.DeviceType() == deviceWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
-				err := device.SetAutoPressButton(true, deviceWallet.ButtonRight)
+			if os.Getenv("AUTO_PRESS_BUTTONS") == "1" && device.Driver.DeviceType() == skyWallet.DeviceTypeEmulator && runtime.GOOS == "linux" {
+				err := device.SetAutoPressButton(true, skyWallet.ButtonRight)
 				if err != nil {
 					log.Error(err)
 					return
@@ -62,7 +63,7 @@ func featuresCmd() gcli.Command {
 					log.Errorln(err)
 					return
 				}
-				ff := deviceWallet.NewFirmwareFeatures(uint64(*features.FirmwareFeatures))
+				ff := skyWallet.NewFirmwareFeatures(uint64(*features.FirmwareFeatures))
 				if err := ff.Unmarshal(); err != nil {
 					log.Errorln(err)
 					return
@@ -70,7 +71,7 @@ func featuresCmd() gcli.Command {
 				log.Printf("\n\nFirmware features:\n%s", ff)
 			// TODO: figure out if this method can even return success or failure msg.
 			case uint16(messages.MessageType_MessageType_Failure), uint16(messages.MessageType_MessageType_Success):
-				msgData, err := deviceWallet.DecodeSuccessOrFailMsg(msg)
+				msgData, err := skyWallet.DecodeSuccessOrFailMsg(msg)
 				if err != nil {
 					log.Error(err)
 					return
