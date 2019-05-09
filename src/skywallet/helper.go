@@ -11,7 +11,7 @@ import (
 
 	"github.com/gogo/protobuf/proto"
 
-	messages "github.com/skycoin/hardware-wallet-protob/go"
+	"github.com/skycoin/hardware-wallet-protob/go"
 
 	"github.com/skycoin/hardware-wallet-go/src/skywallet/usb"
 	"github.com/skycoin/hardware-wallet-go/src/skywallet/wire"
@@ -195,7 +195,9 @@ func sendToDevice(dev usb.Device, chunks [][64]byte) (wire.Message, error) {
 	}
 
 	msg, err := wire.ReadFrom(dev)
-
+	if err != nil {
+		return wire.Message{}, err
+	}
 	return *msg, err
 }
 

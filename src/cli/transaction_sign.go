@@ -74,7 +74,6 @@ func transactionSignCmd() gcli.Command {
 				}
 			}
 
-			fmt.Println(inputs, inputIndex)
 			if len(inputs) != len(inputIndex) {
 				fmt.Println("Every given input hash should have the an inputIndex")
 				return
@@ -83,7 +82,7 @@ func transactionSignCmd() gcli.Command {
 				fmt.Println("Every given output should have a coin and hour value")
 				return
 			}
-			fmt.Println(outputs, coins, hours, addressIndex)
+
 			var transactionInputs []*messages.SkycoinTransactionInput
 			var transactionOutputs []*messages.SkycoinTransactionOutput
 			for i, input := range inputs {

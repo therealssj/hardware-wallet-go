@@ -43,7 +43,7 @@ done
 set +e
 
 HW_GO_INTEGRATION_TESTS=1 HW_GO_INTEGRATION_TEST_MODE=$MODE AUTO_PRESS_BUTTONS=$AUTO_PRESS_BUTTONS \
-    go test ./src/cli/integration/... $FAILFAST -timeout=$TIMEOUT $VERBOSE $RUN_TESTS
+    go test -count=1 ./src/cli/integration/... $FAILFAST -timeout=$TIMEOUT $VERBOSE $RUN_TESTS
 
 TEST_FAIL=$?
 

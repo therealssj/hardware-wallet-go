@@ -14,8 +14,6 @@ import (
 	"github.com/skycoin/hardware-wallet-go/src/skywallet/wire"
 )
 
-// test all for button simulate error
-
 type devicerSuit struct {
 	suite.Suite
 }
@@ -116,9 +114,9 @@ func (suite *devicerSuit) TestApplySettings() {
 		suite.Equal(msg.Kind, tc.msgKind)
 	}
 
-	// driverMock.AssertCalled(suite.T(), "GetDevice")
-	// driverMock.AssertNumberOfCalls(suite.T(), "SendToDevice", 1)
-	// mock.AssertExpectationsForObjects(suite.T(), driverMock)
+	driverMock.AssertCalled(suite.T(), "GetDevice")
+	driverMock.AssertNumberOfCalls(suite.T(), "SendToDevice", 1)
+	mock.AssertExpectationsForObjects(suite.T(), driverMock)
 }
 
 func (suite *devicerSuit) TestBackup() {
@@ -373,10 +371,4 @@ func (suite *devicerSuit) TestWipe() {
 	driverMock.AssertNumberOfCalls(suite.T(), "SendToDevice", 1)
 	mock.AssertExpectationsForObjects(suite.T(), driverMock)
 	require.Equal(suite.T(), msg.Kind, uint16(messages.MessageType_MessageType_Success))
-}
-
-// This ensure that the interface definition matches the implementation
-func (suite *devicerSuit) TestInterfacesImplemented() {
-	var _ Devicer = (*Device)(nil)
-	var _ DeviceDriver = (*Driver)(nil)
 }
